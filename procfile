@@ -1,0 +1,1 @@
+web: gunicorn movie-recommendation-system.wsgi --log-file -

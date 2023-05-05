@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dex - Movie recommendation system</title>
+  <link rel="shortcut icon" href="{% static 'assets/images/favicon.svg' %}" type="image/svg+xml">
+  <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<style>
+
+  #myInput {
+    background-image: url('/css/searchicon.png'); /* Add a search icon to input */
+    background-position: 10px 12px; /* Position the search icon */
+    background-repeat: no-repeat; /* Do not repeat the icon image */
+    width: 100%; /* Full-width */
+    font-size: 16px; /* Increase font-size */
+    padding: 12px 20px 12px 40px; /* Add some padding */
+    border: 1px solid #ddd; /* Add a grey border */
+    margin-bottom: 12px; /* Add some space below the input */
+  }
+  
+  #myUL {
+    /* Remove default list styling */
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  #myUL li button {
+    width:100%;
+    border: 1px solid #ddd; /* Add a border to all links */
+    margin-top: -1px; /* Prevent double borders */
+    background-color: #f6f6f6; /* Grey background color */
+    padding: 12px; /* Add some padding */
+    text-decoration: none; /* Remove default text underline */
+    font-size: 18px; /* Increase the font-size */
+    color: black; /* Add a black text color */
+    display: block; /* Make it into a block element to fill the whole list */
+  }
+  
+  #myUL li button:hover:not(.header) {
+    background-color: #eee; /* Add a hover effect to all links, except for headers */
+
+    
+  }
+</style>
+
+<body id="top">
+  <header class="header" data-header>
+    <div class="container">
+
+      <div class="overlay" data-overlay></div>
+
+      <a href="home" class="logo">
+        <img src="{% static 'assets/images/logo.svg' %}" alt="Dex logo">
+      </a>
+
+      <div class="header-actions">
+        <div class="lang-wrapper">
+          <label for="language">
+            <ion-icon name="globe-outline"></ion-icon>
+          </label>
+
+          <select name="language" id="language">
+            <option value="en">EN</option>
+            <option value="au">AU</option>
+            <option value="ar">AR</option>
+            <option value="tu">TU</option>
+          </select>
+        </div>
+
+        <form action="logout">
+          <button type="submit" class="btn btn-primary">Sign out</button>
+        </form>
+      </div>
+
+      <button class="menu-open-btn" data-menu-open-btn>
+        <ion-icon name="reorder-two"></ion-icon>
+      </button>
+
+      <nav class="navbar" data-navbar>
+        <div class="navbar-top">
+          <a href="home" class="logo">
+            <img src="{% static 'assets/images/logo.svg' %}" alt="Dex logo">
+          </a>
+
+          <button class="menu-close-btn" data-menu-close-btn>
+            <ion-icon name="close-outline"></ion-icon>
+          </button>
+        </div>
+        <ul class="navbar-list">
+          <li>
+            <a href="#home" class="navbar-link">Home</a>
+          </li>
+
+          <li>
+            <a href="#movies" class="navbar-link">Movie</a>
+          </li>
+
+          <li>
+            <a href="#tv_series" class="navbar-link">Web Series</a>
+          </li>
+
+          <li>
+            <a href="#search_history_content" class="navbar-link">Search history</a>
+          </li>
+
+        </ul>
+        <ul class="navbar-social-list">
+          <li>
+            <a href="https://twitter.com/explore" class="navbar-social-link">
+              <ion-icon name="logo-twitter"></ion-icon>
+            </a>
+          </li>
+
+          <li>
+            <a href="https://www.facebook.com/" class="navbar-social-link">
+              <ion-icon name="logo-facebook"></ion-icon>
+            </a>
+          </li>
+
+          <li>
+            <a href="https://in.pinterest.com/" class="navbar-social-link">
+              <ion-icon name="logo-pinterest"></ion-icon>
+            </a>
+          </li>
+
+          <li>
+            <a href="https://www.instagram.com/" class="navbar-social-link">
+              <ion-icon name="logo-instagram"></ion-icon>
+            </a>
+          </li>
+
+          <li>
+            <a href="https://www.youtube.com/" class="navbar-social-link">
+              <ion-icon name="logo-youtube"></ion-icon>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <article>
+      <section class="hero" id="home">
+        <div class="container">
+
+          <div class="hero-content">
+
+            {% comment %} <p class="hero-subtitle">Dex</p> {% endcomment %}
+
+            <h1 class="h1 hero-title">
+              <strong>Movie Recommendation System</strong>
+            </h1>
+            <div class="hero-title">
+              <form action="search/" method="post">
+                {% csrf_token %}
+                <input type="text" id="myInput" onkeyup="myFunction()" onclick="clicked()" placeholder="Search for movies..">
+
+                <div style="display:none;" id="myTemp">
+                  <ul id="myUL" style="overflow-y: scroll; height: 250px;">
+                  {% for movie in movie_title %}
+                  <li><button type='submit' name='searches' value="{{movie}}">{{movie}}</button></li>
+                  {% endfor %}
+                  
+                  </ul>
+              </form>  
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tv-series" id="search_history_content">
+        <div class="container">
+          <h2 class="h2 section-title">Search History</h2>
+          {% if search_history is none %}
+            <h2 class="h2 section-title">Welcome new customer, Try searching some movies ..</h2>
+          {% else %}
+            <form action="data/" method="post">
+              {% csrf_token %}
+              <ul class="movies-list">
+                {% for i in search_history %}
+                <li>
+                  <div class="movie-card">
+                    <button type="image" name="pop_series_button" value="{{i.data.data_of_clicked.Title}}">
+                      <figure class="card-banner">
+                        <img src="{{i.data.poster}}" alt="Moon Knight movie poster">
+                      </figure>
+                    </button>
+
+                    <div class="title-wrapper">
+                      <button type="image" name="pop_series_button" value="{{i.data.data_of_clicked.Title}}">
+                        <h3 class="card-title">{{i.data.data_of_clicked.Title}}</h3>
+                      </button>
+                    </div>
+                  </div>
+                </li>
+                {% endfor %}
+              </ul>
+            </form>
+          {% endif %}
+        </div>
+      </section>
+
+      <section class="top-rated" id="movies">
+        <div class="container">
+        <h2 class="h2 section-title">Movies</h2>
+        <form action="/datas/" method="post">
+          {% csrf_token %}
+          <ul class="movies-list">
+            {% for i in pop_movie %}
+            <li>
+              <div class="movie-card">
+
+                <button type="image" name="pop_button" value="{{i.0}}">
+                  <figure class="card-banner">
+                    <img src="{{i.1}}" alt="Movie poster">
+                  </figure>
+                </button>
+
+                <div class="title-wrapper">
+                  <button type="image" name="post_button" value="{{i.0}}">
+                    <h3 class="card-title">{{i.0}}</h3>
+                  </button>
+                </div>
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+        </form>
+        </div>
+      </section>
+
+      <section class="tv-series" id="tv_series">
+        <div class="container">
+          <h2 class="h2 section-title">Best TV Series</h2>
+          
+          <form action="data/" method="post">
+            {% csrf_token %}
+            <ul class="movies-list">
+              {% for i in pop_series %}
+              <li>
+                <div class="movie-card">
+                  <button type="image" name="pop_series_button" value="{{i.0}}">
+                    <figure class="card-banner">
+                      <img src="{{i.1}}" alt="Moon Knight movie poster">
+                    </figure>
+                  </button>
+
+                  <div class="title-wrapper">
+                    <button type="image" name="pop_series_button" value="{{i.0}}">
+                      <h3 class="card-title">{{i.0}}</h3>
+                    </button>
+                  </div>
+                </div>
+              </li>
+              {% endfor %}
+            </ul>
+        </div>
+      </form>
+      </section>
+    </article>
+  </main>
+
+
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="container">
+        <div class="footer-brand-wrapper">
+          <a href="home" class="logo">
+            <img src="{% static 'assets/images/logo.svg' %}" alt="Dex logo">
+          </a>
+
+          <ul class="footer-list">
+
+            <li>
+              <a href="home" class="footer-link">Home</a>
+            </li>
+
+            <li>
+              <a href="home" class="footer-link">Movie</a>
+            </li>
+
+            <li>
+              <a href="home" class="footer-link">TV Show</a>
+            </li>
+
+            <li>
+              <a href="home" class="footer-link">Web Series</a>
+            </li>
+
+            <li>
+              <a href="home" class="footer-link">Pricing</a>
+            </li>
+
+          </ul>
+
+        </div>
+
+        <div class="divider"></div>
+        <div class="quicklink-wrapper">
+          <ul class="quicklink-list">
+            <li>
+              <a href="home" class="quicklink-link">Faq</a>
+            </li>
+            <li>
+              <a href="home" class="quicklink-link">Help center</a>
+            </li>
+            <li>
+              <a href="home" class="quicklink-link">Terms of use</a>
+            </li>
+            <li>
+              <a href="home" class="quicklink-link">Privacy</a>
+            </li>
+
+          </ul>
+
+          <ul class="social-list">
+            <li>
+              <a href="https://www.facebook.com/" class="social-link">
+                <ion-icon name="logo-facebook"></ion-icon>
+              </a>
+            </li>
+            <li>
+              <a href="https://twitter.com/login?lang=en" class="social-link">
+                <ion-icon name="logo-twitter"></ion-icon>
+              </a>
+            </li>
+            <li>
+              <a href="https://in.pinterest.com/" class="social-link">
+                <ion-icon name="logo-pinterest"></ion-icon>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.instagram.com/" class="social-link">
+                <ion-icon name="logo-linkedin"></ion-icon>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div class="container">
+        <p class="copyright">
+          &copy; 2023 <a href="#">Dex</a>. All Rights Reserved
+        </p>
+
+      </div>
+    </div>
+  </footer>
+
+  <a href="#top" class="go-top" data-go-top>
+    <ion-icon name="chevron-up"></ion-icon>
+  </a>
+  <script src="{% static './assets/js/script.js' %}"></script>
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script>
+    function myFunction() {
+      // Declare variables
+      var input, filter, ul, li, a, i, txtValue;
+      input = document.getElementById('myInput');
+      filter = input.value.toUpperCase();
+      ul = document.getElementById("myUL");
+      li = ul.getElementsByTagName('li');
+    
+      // Loop through all list items, and hide those who don't match the search query
+      for (i = 0; i < li.length; i++) {
+        a = li[i].getElementsByTagName("button")[0];
+        txtValue = a.textContent || a.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          li[i].style.display = "";
+        } else {
+          li[i].style.display = "none";
+        }
+      }
+    }
+   
+  
+    function clicked(){
+      var  status=document.getElementById('myTemp').style.display;
+      console.log("cliicked")
+      if(status=="block"){
+         document.getElementById('myTemp').style.display="none";
+      }
+      else{
+         document.getElementById('myTemp').style.display="block";
+      }
+ }
+ 
+  </script>
+</body>
+</html>

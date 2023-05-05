@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dex - Movie recommendation system</title>
+    <link rel="shortcut icon" href="{% static 'assets/images/favicon.svg' %}" type="image/svg+xml">
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body  id="top">
+  {% comment %} <style>
+    .movie-detail {
+      background: url("https://image.tmdb.org/t/p/original//7bWxAsNPv9CXHOhZbJVlj2KxgfP.jpg"") no-repeat;
+      background-size: cover;
+      background-position: center;
+      padding-top: 160px;
+      padding-bottom: var(--section-padding);
+    }
+  </style> {% endcomment %}
+    <header class="header" data-header>
+        <div class="container">
+
+            <div class="overlay" data-overlay></div>
+
+            <a href="home" class="logo">
+            <img src="{% static 'assets/images/logo.svg' %}" alt="Dex logo">
+            </a>
+
+            <div class="header-actions">
+            <div class="lang-wrapper">
+                <label for="language">
+                <ion-icon name="globe-outline"></ion-icon>
+                </label>
+
+                <select name="language" id="language">
+                <option value="en">EN</option>
+                <option value="au">AU</option>
+                <option value="ar">AR</option>
+                <option value="tu">TU</option>
+                </select>
+            </div>
+
+            <form action="logout">
+                <button type="submit" class="btn btn-primary">Sign out</button>
+            </form>
+            </div>
+
+            <button class="menu-open-btn" data-menu-open-btn>
+            <ion-icon name="reorder-two"></ion-icon>
+            </button>
+
+            <nav class="navbar" data-navbar>
+            <div class="navbar-top">
+                <a href="home" class="logo">
+                <img src="{% static 'assets/images/logo.svg' %}" alt="Dex logo">
+                </a>
+
+                <button class="menu-close-btn" data-menu-close-btn>
+                <ion-icon name="close-outline"></ion-icon>
+                </button>
+            </div>
+            <ul class="navbar-list">
+                <li>
+                <a href="home" class="navbar-link">Home</a>
+                </li>
+            </ul>
+            <ul class="navbar-social-list">
+                <li>
+                <a href="https://twitter.com/explore" class="navbar-social-link">
+                    <ion-icon name="logo-twitter"></ion-icon>
+                </a>
+                </li>
+
+                <li>
+                <a href="https://www.facebook.com/" class="navbar-social-link">
+                    <ion-icon name="logo-facebook"></ion-icon>
+                </a>
+                </li>
+
+                <li>
+                <a href="https://in.pinterest.com/" class="navbar-social-link">
+                    <ion-icon name="logo-pinterest"></ion-icon>
+                </a>
+                </li>
+
+                <li>
+                <a href="https://www.instagram.com/" class="navbar-social-link">
+                    <ion-icon name="logo-instagram"></ion-icon>
+                </a>
+                </li>
+
+                <li>
+                <a href="https://www.youtube.com/" class="navbar-social-link">
+                    <ion-icon name="logo-youtube"></ion-icon>
+                </a>
+                </li>
+            </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <article>
+            <section class="movie-detail" style="padding: 10% 10% 15% 15%; margin:0; display:flex; justify-content: center">
+                <div class="container">
+                <figure class="movie-detail-banner">
+                    <img src="{{poster}}" alt="Image Poster not found">
+        
+                    <button class="play-btn">
+                    <ion-icon name="play-circle-outline"></ion-icon>
+                    </button>
+                </figure>
+        
+                <div class="movie-detail-content">
+        
+                    <p class="detail-subtitle">New Episodes</p>
+        
+                    <h1 class="h1 detail-title">
+                    {{data_of_clicked.Title}}
+                    </h1>
+        
+                    <div class="meta-wrapper">
+        
+                    <div class="badge-wrapper">
+                        <div class="badge badge-fill">{{data_of_clicked.Rated}}</div>
+                    </div>
+        
+                    <div class="ganre-wrapper">
+                        <div>{{data_of_clicked.Genre}}</div>
+                    </div>
+        
+                    <div class="date-time">
+        
+                        <div>
+                        <ion-icon name="calendar-outline"></ion-icon>
+        
+                        <time datetime="2021">{{data_of_clicked.Year}}</time>
+                        </div>
+        
+                        <div>
+                        <ion-icon name="time-outline"></ion-icon>
+        
+                        <time datetime="PT115M">{{data_of_clicked.Runtime}}</time>
+                        </div>
+        
+                    </div>
+        
+                    </div>
+        
+                    <p class="storyline">
+                    {{data_of_clicked.Plot}}
+                    </p>
+        
+                    <div class="details-actions">
+        
+                    <button class="share">
+                        <ion-icon name="share-social"></ion-icon>
+        
+                        <span>Share</span>
+                    </button>
+        
+                    <div class="title-wrapper">
+                    </div>
+        
+                    <button class="btn btn-primary">
+                        <ion-icon name="play"></ion-icon>
+        
+                        <span>Watch Now</span>
+                    </button>
+        
+                    </div>
+                </div>
+        
+                </div>
+            </section>
+        </article>
+        <div id = "yt_link_movie">
+          <iframe style = "width=270px height=180px border-radius:5px padding-top:0%" 
+              src="https://www.youtube.com/embed/{{yt_link}}">
+          </iframe>
+        </div>
+
+
+        <div id="cast">
+            {% if cast_info %}
+                {% for i in cast_info %}   
+                    <div id = "cast-info-style">
+                      <img src="{{i.1}}" alt="Image" style="width: 100px; height:120px;">
+                      <h3>{{i.0}}</h3>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        {% comment %} {% if back_path %}
+            <img src="{{back_path}}" alt=""  style="width: 420px;height:250px;">
+        {% endif %} {% endcomment %}
+
+        
+        {% comment %} {% for key, value in data_of_clicked.items %}
+        
+            <li>{{ key }} : {{ value }}</li>
+        
+        {% endfor %} {% endcomment %}
+    </main>
+    <footer class="footer">
+        <div class="footer-top">
+          <div class="container">
+            <div class="footer-brand-wrapper">
+              <a href="home" class="logo">
+                <img src="{% static 'assets/images/logo.svg' %}" alt="Dex logo">
+              </a>
+    
+              <ul class="footer-list">
+    
+                <li>
+                  <a href="home" class="footer-link">Home</a>
+                </li>
+    
+                <li>
+                  <a href="home" class="footer-link">Movie</a>
+                </li>
+    
+                <li>
+                  <a href="home" class="footer-link">TV Show</a>
+                </li>
+    
+                <li>
+                  <a href="home" class="footer-link">Web Series</a>
+                </li>
+    
+                <li>
+                  <a href="home" class="footer-link">Pricing</a>
+                </li>
+    
+              </ul>
+    
+            </div>
+    
+            <div class="divider"></div>
+            <div class="quicklink-wrapper">
+              <ul class="quicklink-list">
+                <li>
+                  <a href="home" class="quicklink-link">Faq</a>
+                </li>
+                <li>
+                  <a href="home" class="quicklink-link">Help center</a>
+                </li>
+                <li>
+                  <a href="home" class="quicklink-link">Terms of use</a>
+                </li>
+                <li>
+                  <a href="home" class="quicklink-link">Privacy</a>
+                </li>
+    
+              </ul>
+    
+              <ul class="social-list">
+                <li>
+                  <a href="https://www.facebook.com/" class="social-link">
+                    <ion-icon name="logo-facebook"></ion-icon>
+                  </a>
+                </li>
+                <li>
+                  <a href="https://twitter.com/login?lang=en" class="social-link">
+                    <ion-icon name="logo-twitter"></ion-icon>
+                  </a>
+                </li>
+                <li>
+                  <a href="https://in.pinterest.com/" class="social-link">
+                    <ion-icon name="logo-pinterest"></ion-icon>
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.instagram.com/" class="social-link">
+                    <ion-icon name="logo-linkedin"></ion-icon>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+    
+        <div class="footer-bottom">
+          <div class="container">
+            <p class="copyright">
+              &copy; 2023 <a href="#">Dex</a>. All Rights Reserved
+            </p>
+    
+          </div>
+        </div>
+      </footer>
+    
+    <a href="#top" class="go-top" data-go-top>
+    <ion-icon name="chevron-up"></ion-icon>
+    </a>
+    <script src="{% static './assets/js/script.js' %}"></script>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</body>
+    {% comment %} <main>
+        <h1>Similarity Results for {{data.0.0}}</h1>
+        <form action="data/" method="post">
+        {% for i in data %}
+        <li>
+            <h2>{{ i.0 }}</h2>
+            
+                {% csrf_token %}
+                <button type="Image" name="img_button" value="{{i.0}}">
+                    <img src="{{i.1}}" alt="">
+                </button>
+            
+        </li>
+            {% endfor %}
+        </form>
+    </main> {% endcomment %}
+    
+      {% comment %} <section class="top-rated">
+        <div class="container" id="movies">
+        <form action="datas/" method="post">
+          {% csrf_token %}
+          <ul class="movies-list">
+            {% for i in pop_movie%}
+            <li>
+              <div class="movie-card">
+
+                <button type="image" name="pop_button" value="{{i.0}}">
+                  <figure class="card-banner">
+                    <img src="{{i.1}}" alt="Movie poster">
+                  </figure>
+                </button>
+
+                <div class="title-wrapper">
+                  <button type="image" name="post_button" value="{{i.0}}">
+                    <h3 class="card-title">{{i.0}}</h3>
+                  </button>
+                </div>
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+        </form>
+        </div>
+      </section>
+
+      <section class="tv-series" id="tv_series">
+        <div class="container">
+          <h2 class="h2 section-title">Best TV Series</h2>
+          
+          <form action="data/" method="post">
+            {% csrf_token %}
+            <ul class="movies-list">
+              {% for i in pop_series %}
+              <li>
+                <div class="movie-card">
+                  <button type="image" name="pop_series_button" value="{{i.0}}">
+                    <figure class="card-banner">
+                      <img src="{{i.1}}" alt="Moon Knight movie poster">
+                    </figure>
+                  </button>
+
+                  <div class="title-wrapper">
+                    <button type="image" name="pop_series_button" value="{{i.0}}">
+                      <h3 class="card-title">{{i.0}}</h3>
+                    </button>
+                  </div>
+                </div>
+              </li>
+              {% endfor %}
+            </ul>
+        </div>
+      </form>
+      </section> {% endcomment %}
