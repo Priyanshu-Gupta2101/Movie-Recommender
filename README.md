@@ -7,6 +7,8 @@ The current model is trained on 3500 movies
 The logic for training model is in try.ipnb file
 
 To run the project 
+
+    pip install -r requirements.txt
     
     python manage.py runserver
   
